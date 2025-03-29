@@ -15,7 +15,7 @@ const db = mysql.createConnection({
   database: "empleados",
 });
 
-//creación de petención de guardado
+//creación de petención de guardado para los campos llenos
 app.post("/create", (req, res) => {
   const nombre = req.body.nombre;
   const edad = req.body.edad;
@@ -30,16 +30,51 @@ app.post("/create", (req, res) => {
       if (err) {
         console.log(err);
       } else {
-        res.send("Empleado registrado exitosamente");
+        res.send(result);
       }
     }
   );
 });
 
-//Listado de datos
-
+//Obtiene el listado de datos
 app.get("/empleados", (req, res) => {
   db.query("SELECT * FROM empleados", (err, result) => {
+    if (err) {
+      console.log(err);
+    } else {
+      res.send(result);
+    }
+  });
+});
+
+//Función de actualizar
+app.put("/update", (req, res) => {
+  const id = req.body.id;
+  const nombre = req.body.nombre;
+  const edad = req.body.edad;
+  const pais = req.body.pais;
+  const cargo = req.body.cargo;
+  const anios = req.body.anios;
+
+  db.query(
+    "UPDATE empleados SET nombre = ?,edad= ?,pais = ?,cargo = ?,anios = ? WHERE id = ? ",
+    [nombre, edad, pais, cargo, anios, id],
+    (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.send(result);
+      }
+    }
+  );
+});
+
+//Función de eliminar
+
+app.delete("/delete/:id", (req, res) => {
+  const id = req.params.id;
+
+  db.query("DELETE FROM empleados WHERE id = ? ", [id], (err, result) => {
     if (err) {
       console.log(err);
     } else {
